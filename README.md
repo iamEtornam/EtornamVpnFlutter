@@ -21,10 +21,6 @@ This project is an implementation of a Design i found on [Uplabs.com](https://ww
     <td><img align="left" src="https://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/art_1.png" width="200" height="400"/></td>
     <td><img src="https://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/art_2.png" width="200" height="400"/></td> 
 </tr>
-<tr>
-    <td><p>Screen 1</p></td>
-    <td><p>Screen 2</p></td>
-</tr>
 
 ## Getting Started
 
