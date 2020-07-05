@@ -17,15 +17,15 @@ This project is an implementation of a Design i found on [Uplabs.com](https://ww
 <img src="https://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/VPN.png" width="100%"  height="50%"/>
 <br>
    
-  </tr>
-    <tr>
-    <td><img align="left" src="https://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/VPN.png" width="50%" height="400"/></td>
-    <td><img src="hhttps://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/VPN.png" width="50%" height="400"/></td> 
-  </tr>
-  <tr>
-<td><p>Screen 1</p></td>
-<td><p>Screen 2</p></td>
-  </tr>
+<tr>
+    <td><img align="left" src="https://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/VPN.png" width="200" height="400"/></td>
+    <td><img src="hhttps://raw.githubusercontent.com/RegNex/EtornamVpnFlutter/master/screenshots/VPN.png" width="200" height="400"/></td> 
+</tr>
+
+<tr>
+    <td><p>Screen 1</p></td>
+    <td><p>Screen 2</p></td>
+</tr>
 
 ## Getting Started
 
