@@ -1,6 +1,7 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:etornam_vpn/screens/server_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vpn/flutter_vpn.dart';
 
 import 'shared_widgets/server_list_widget.dart';
 
@@ -10,6 +11,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FlutterVpnState _flutterVpnState = FlutterVpnState.disconnected;
+  CharonErrorState charonState = CharonErrorState.NO_ERROR;
+
+  @override
+  void initState() {
+    FlutterVpn.prepare();
+    FlutterVpn.onStateChanged.listen((FlutterVpnState flutterVpnState) =>
+        setState(() => this._flutterVpnState = flutterVpnState));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +59,7 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: 25),
                   Center(
                       child: Text(
-                    'You are connected',
+                    '${connectionState(state: _flutterVpnState)}',
                     style: Theme.of(context).textTheme.bodyText1,
                   )),
                   SizedBox(height: 8),
@@ -63,17 +75,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Center(
                     child: AvatarGlow(
-                      glowColor: Color.fromRGBO(37, 112, 252, 1),
+                      glowColor: _flutterVpnState == FlutterVpnState.disconnected ? Colors.transparent : Color.fromRGBO(37, 112, 252, 1),
                       endRadius: 100.0,
                       duration: Duration(milliseconds: 2000),
-                      repeat: true,
-                      showTwoGlows: false,
+                      repeat: _flutterVpnState == FlutterVpnState.disconnected ? false :true,
+                      showTwoGlows: true,
                       repeatPauseDuration: Duration(milliseconds: 100),
                       shape: BoxShape.circle,
                       child: Material(
                         elevation: 2,
                         shape: CircleBorder(),
-                        color: Color.fromRGBO(37, 112, 252, 1),
+                        color: _flutterVpnState == FlutterVpnState.disconnected ? Colors.grey : Color.fromRGBO(37, 112, 252, 1),
                         child: SizedBox(
                           height: 150,
                           width: 150,
@@ -88,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                'Connected',
+                                '${connectionButtonState(state: _flutterVpnState)}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText2
@@ -152,5 +164,39 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ));
+  }
+
+  String connectionState({FlutterVpnState state}) {
+    switch (state) {
+      case FlutterVpnState.connected:
+        return 'You are connected';
+      case FlutterVpnState.connecting:
+        return 'VPN is connecting';
+      case FlutterVpnState.disconnected:
+        return 'You are disconnected';
+      case FlutterVpnState.disconnecting:
+        return 'VPN is disconnecting';
+      case FlutterVpnState.genericError:
+        return 'Error getting status';
+      default:
+        return 'Getting connection status';
+    }
+  }
+
+   String connectionButtonState({FlutterVpnState state}) {
+    switch (state) {
+      case FlutterVpnState.connected:
+        return 'Connected';
+      case FlutterVpnState.connecting:
+        return 'Connecting';
+      case FlutterVpnState.disconnected:
+        return 'Disconnected';
+      case FlutterVpnState.disconnecting:
+        return 'Disconnecting';
+      case FlutterVpnState.genericError:
+        return 'Error';
+      default:
+        return 'Disconnected';
+    }
   }
 }
