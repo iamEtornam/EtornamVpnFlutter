@@ -1,22 +1,28 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_vpn (0.1.0):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_vpn (from `.symlinks/plugins/flutter_vpn/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_vpn:
+    :path: ".symlinks/plugins/flutter_vpn/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_vpn: 95453289a195abfd6b291b10f70f36721dd862e9
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.10.0
