@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
@@ -14,13 +15,55 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Stream<String> _durationStream;
   CharonErrorState charonState = CharonErrorState.NO_ERROR;
   Server? server;
+  String connectionTime = '00.00.00';
 
   @override
   void initState() {
     super.initState();
+    _durationStream = vpnConnectionDuration();
+  }
+
+  Stream<String> vpnConnectionDuration() async* {
+    if (server == null) {
+      yield 'Please select a server!';
+      return;
+    }
+    debugPrint('called');
+    yield 'Connecting...';
+    // Connect to VPN service
+    await FlutterVpn.connectIkev2EAP(
+      server: server!.domain!,
+      username: server!.username!,
+      password: server!.password!,
+      name: server!.name!,
+      mtu: server!.mtu!,
+      port: server!.port!,
+    );
+
+    // Get current time
+    DateTime startTime = DateTime.now();
+
+    // Wait for VPN to connect
     FlutterVpn.prepare();
+
+    // Create a timer that emits the duration of the VPN connection every second
+    Timer.periodic(Duration(seconds: 1), (timer) async* {
+      // Get current time
+      DateTime now = DateTime.now();
+
+      // Calculate duration of VPN connection
+      Duration duration = now.difference(startTime);
+
+      // Format duration as 00.00.00
+      String formattedDuration =
+          "${duration.inHours.toString().padLeft(2, '0')}.${(duration.inMinutes % 60).toString().padLeft(2, '0')}.${(duration.inSeconds % 60).toString().padLeft(2, '0')}";
+      debugPrint(formattedDuration);
+      // Emit the formatted duration
+      yield formattedDuration;
+    });
   }
 
   @override
@@ -75,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                 ip,
                                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    color: Color.fromRGBO(37, 112, 252, 1),
+                                    color: connectionColorState(state: _flutterVpnState),
                                     fontWeight: FontWeight.w600),
                               ));
                             }),
@@ -83,43 +126,49 @@ class _HomePageState extends State<HomePage> {
                           height: 15,
                         ),
                         Center(
-                          child: AvatarGlow(
-                            glowColor: _flutterVpnState == FlutterVpnState.disconnected
-                                ? Colors.transparent
-                                : Color.fromRGBO(37, 112, 252, 1),
-                            endRadius: 100.0,
-                            duration: Duration(milliseconds: 2000),
-                            repeat: _flutterVpnState == FlutterVpnState.disconnected ? false : true,
-                            showTwoGlows: true,
-                            repeatPauseDuration: Duration(milliseconds: 100),
-                            shape: BoxShape.circle,
-                            child: Material(
-                              elevation: 0,
-                              shape: CircleBorder(),
-                              color: _flutterVpnState == FlutterVpnState.disconnected
-                                  ? Colors.grey
-                                  : Color.fromRGBO(37, 112, 252, 1),
-                              child: SizedBox(
-                                height: 150,
-                                width: 150,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.power_settings_new,
-                                      color: Colors.white,
-                                      size: 50,
-                                    ),
-                                    SizedBox(height: 10),
-                                    Text(
-                                      '${connectionButtonState(state: _flutterVpnState)}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(color: Colors.white),
-                                    )
-                                  ],
+                          child: InkWell(
+                            onTap: () {
+                              vpnConnectionDuration().listen((event) {
+                                print(event);
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(90),
+                            child: AvatarGlow(
+                              glowColor: _flutterVpnState != FlutterVpnState.connected
+                                  ? Colors.transparent
+                                  : connectionColorState(state: _flutterVpnState),
+                              endRadius: 100.0,
+                              duration: Duration(milliseconds: 2000),
+                              repeat: _flutterVpnState != FlutterVpnState.connected ? false : true,
+                              showTwoGlows: true,
+                              repeatPauseDuration: Duration(milliseconds: 100),
+                              shape: BoxShape.circle,
+                              child: Material(
+                                elevation: 0,
+                                shape: CircleBorder(),
+                                color: connectionColorState(state: _flutterVpnState),
+                                child: SizedBox(
+                                  height: 150,
+                                  width: 150,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.power_settings_new,
+                                        color: Colors.white,
+                                        size: 50,
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        '${connectionButtonState(state: _flutterVpnState)}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(color: Colors.white),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -128,18 +177,23 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        Center(
-                            child: Text(
-                          '00.00.01',
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.w700, color: Color.fromRGBO(37, 112, 252, 1)),
-                        )),
+                        StreamBuilder<String>(
+                            stream: _durationStream,
+                            builder: (context, snapshot) {
+                              return Center(
+                                  child: Text(
+                                snapshot.data ?? '00.00.00',
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: Color.fromRGBO(37, 112, 252, 1)),
+                              ));
+                            }),
                         SizedBox(
                           height: 25,
                         ),
                         ServerItemWidget(
-                          flagAsset: server?.flag ?? 'assets/ghana.png',
-                          label: server?.name ?? 'Ghana',
+                          flagAsset: server?.flag ?? 'assets/logo.png',
+                          label: server?.name ?? 'No sever selected',
                           icon: Icons.arrow_forward_ios,
                           onTap: () async {
                             final res = await Navigator.of(context)
@@ -150,6 +204,10 @@ class _HomePageState extends State<HomePage> {
                             if (res != null) {
                               setState(() {
                                 server = res;
+                              });
+
+                              vpnConnectionDuration().listen((event) {
+                                print(event);
                               });
                             }
                           },
@@ -215,6 +273,21 @@ class _HomePageState extends State<HomePage> {
         return 'Error';
       default:
         return 'Disconnected';
+    }
+  }
+
+  Color connectionColorState({FlutterVpnState? state}) {
+    switch (state) {
+      case FlutterVpnState.connected:
+        return Color.fromRGBO(37, 112, 252, 1);
+      case FlutterVpnState.connecting:
+        return Color.fromRGBO(87, 141, 240, 1);
+      case FlutterVpnState.disconnected:
+      case FlutterVpnState.disconnecting:
+        return Colors.grey;
+
+      default:
+        return Colors.red;
     }
   }
 }

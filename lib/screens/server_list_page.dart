@@ -8,19 +8,82 @@ class ServerListPage extends StatefulWidget {
 }
 
 class _ServerListPageState extends State<ServerListPage> {
-  Server? server;
+  Server server = Server(
+      name: 'Ghana',
+      flag: 'assets/ghana.png',
+      domain: 'vpn.example.com',
+      username: 'admin',
+      password: 'admin',
+      port: 1234,
+      mtu: 1234);
   final premiumServers = <Server>[
-    Server(name: 'England', flag: 'assets/england.png'),
-    Server(name: 'United States', flag: 'assets/usa.jpg'),
-    Server(name: 'Canada', flag: 'assets/canada.png'),
-    Server(name: 'France', flag: 'assets/france.png'),
-    Server(name: 'Ghana', flag: 'assets/ghana.png'),
+    Server(
+        name: 'England',
+        flag: 'assets/england.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
+    Server(
+        name: 'United States',
+        flag: 'assets/usa.jpg',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
+    Server(
+        name: 'Canada',
+        flag: 'assets/canada.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
+    Server(
+        name: 'France',
+        flag: 'assets/france.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
+    Server(
+        name: 'Ghana',
+        flag: 'assets/ghana.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
   ];
 
   List<Server> freeServers = [
-    Server(name: 'England', flag: 'assets/england.png'),
-    Server(name: 'France', flag: 'assets/france.png'),
-    Server(name: 'Ghana', flag: 'assets/ghana.png'),
+    Server(
+        name: 'England',
+        flag: 'assets/england.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
+    Server(
+        name: 'France',
+        flag: 'assets/france.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
+    Server(
+        name: 'Ghana',
+        flag: 'assets/ghana.png',
+        domain: 'vpn.example.com',
+        username: 'admin',
+        password: 'admin',
+        port: 1234,
+        mtu: 1234),
   ];
   @override
   Widget build(BuildContext context) {
@@ -162,20 +225,10 @@ class Server {
   String? flag;
   String? name;
   String? domain;
+  String? username;
+  String? password;
+  int? port;
+  int? mtu;
 
-  Server({this.flag, this.name, this.domain});
-
-  Server.fromJson(Map<String, dynamic> json) {
-    flag = json['flag'];
-    name = json['name'];
-    domain = json['domain'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['flag'] = this.flag;
-    data['name'] = this.name;
-    data['domain'] = this.domain;
-    return data;
-  }
+  Server({this.flag, this.name, this.domain, this.username, this.password, this.port, this.mtu});
 }
