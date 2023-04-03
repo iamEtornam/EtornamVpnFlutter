@@ -18,41 +18,45 @@ class ServerItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return InkWell(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(10),
-      color: Theme.of(context).cardColor,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Colors.white,
-                  backgroundImage: ExactAssetImage(
-                    flagAsset,
+      child: Material(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).cardColor,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.white,
+                    backgroundImage: ExactAssetImage(
+                      flagAsset,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ],
-            ),
-            IconButton(
-              icon: Icon(icon),
-              onPressed: onTap,
-              iconSize: 18,
-              color: isFaded ? Colors.grey : Theme.of(context).iconTheme.color,
-            )
-          ],
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+              IconButton(
+                icon: Icon(icon),
+                onPressed: onTap,
+                iconSize: 18,
+                color: isFaded ? Colors.grey : Theme.of(context).iconTheme.color,
+              )
+            ],
+          ),
         ),
       ),
     );

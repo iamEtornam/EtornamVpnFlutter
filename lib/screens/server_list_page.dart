@@ -8,137 +8,174 @@ class ServerListPage extends StatefulWidget {
 }
 
 class _ServerListPageState extends State<ServerListPage> {
-  final premiumServers = [
-    ['assets/england.png', 'England'],
-    ['assets/usa.jpg', 'United States'],
-    ['assets/canada.png', 'Canada'],
-    ['assets/france.png', 'France'],
-    ['assets/ghana.png', 'Ghana'],
+  Server? server;
+  final premiumServers = <Server>[
+    Server(name: 'England', flag: 'assets/england.png'),
+    Server(name: 'United States', flag: 'assets/usa.jpg'),
+    Server(name: 'Canada', flag: 'assets/canada.png'),
+    Server(name: 'France', flag: 'assets/france.png'),
+    Server(name: 'Ghana', flag: 'assets/ghana.png'),
   ];
 
-  List freeServers = [
-    ['assets/england.png', 'England', false],
-    ['assets/france.png', 'France', false],
-    ['assets/ghana.png', 'Ghana', false],
+  List<Server> freeServers = [
+    Server(name: 'England', flag: 'assets/england.png'),
+    Server(name: 'France', flag: 'assets/france.png'),
+    Server(name: 'Ghana', flag: 'assets/ghana.png'),
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Servers',
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop(server);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Servers',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ),
+        body: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(20),
+          children: [
+            RichText(
+                text: TextSpan(
+                    text: 'Premuim ',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(fontWeight: FontWeight.w700),
+                    children: [
+                  TextSpan(
+                      text: 'Servers',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(fontWeight: FontWeight.normal))
+                ])),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: premiumServers.length,
+                itemBuilder: (_, index) {
+                  return ServerItemWidget(
+                      isFaded: true,
+                      label: premiumServers[index].name!,
+                      icon: Icons.lock,
+                      flagAsset: premiumServers[index].flag!,
+                      onTap: () {
+                        setState(() {
+                          server = premiumServers[index];
+                        });
+                      });
+                },
+                separatorBuilder: (_, index) => SizedBox(height: 10),
+              ),
+            ),
+            SizedBox(height: 30),
+            RichText(
+                text: TextSpan(
+                    text: 'Free ',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(fontWeight: FontWeight.w700),
+                    children: [
+                  TextSpan(
+                      text: 'Servers',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(fontWeight: FontWeight.normal))
+                ])),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: freeServers.length,
+                itemBuilder: (_, index) {
+                  return Material(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).cardColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(7.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.white,
+                                backgroundImage: ExactAssetImage(
+                                  freeServers[index].flag!,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                freeServers[index].name!,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                          RoundCheckBox(
+                            size: 24,
+                            checkedWidget: const Icon(Icons.check, size: 18, color: Colors.white),
+                            borderColor: freeServers[index] == server
+                                ? Theme.of(context).scaffoldBackgroundColor
+                                : Color.fromRGBO(37, 112, 252, 1),
+                            checkedColor: Color.fromRGBO(37, 112, 252, 1),
+                            isChecked: freeServers[index] == server,
+                            onTap: (x) {
+                              setState(() {
+                                server = freeServers[index];
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (_, index) => SizedBox(height: 10),
+              ),
+            )
+          ],
         ),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.all(20),
-        children: [
-          RichText(
-              text: TextSpan(
-                  text: 'Premuim ',
-                  style:
-                      Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
-                  children: [
-                TextSpan(
-                    text: 'Servers',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall!
-                        .copyWith(fontWeight: FontWeight.normal))
-              ])),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: premiumServers.length,
-              itemBuilder: (_, index) {
-                return ServerItemWidget(
-                    isFaded: true,
-                    label: premiumServers[index][1],
-                    icon: Icons.lock,
-                    flagAsset: premiumServers[index][0],
-                    onTap: () {});
-              },
-              separatorBuilder: (_, index) => SizedBox(height: 10),
-            ),
-          ),
-          SizedBox(height: 30),
-          RichText(
-              text: TextSpan(
-                  text: 'Free ',
-                  style:
-                      Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
-                  children: [
-                TextSpan(
-                    text: 'Servers',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall!
-                        .copyWith(fontWeight: FontWeight.normal))
-              ])),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: freeServers.length,
-              itemBuilder: (_, index) {
-                return Material(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).cardColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.white,
-                              backgroundImage: ExactAssetImage(
-                                freeServers[index][0],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Text(
-                              freeServers[index][1],
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
-                        ),
-                        RoundCheckBox(
-                          size: 24,
-                          checkedWidget: const Icon(Icons.check, size: 18, color: Colors.white),
-                          borderColor: freeServers[index][2]
-                              ? Theme.of(context).scaffoldBackgroundColor
-                              : Color.fromRGBO(37, 112, 252, 1),
-                          checkedColor: Color.fromRGBO(37, 112, 252, 1),
-                          isChecked: freeServers[index][2],
-                          onTap: (x) {
-                            setState(() {
-                              freeServers[index][2] = !freeServers[index][2];
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (_, index) => SizedBox(height: 10),
-            ),
-          )
-        ],
-      ),
     );
+  }
+}
+
+class Server {
+  String? flag;
+  String? name;
+  String? domain;
+
+  Server({this.flag, this.name, this.domain});
+
+  Server.fromJson(Map<String, dynamic> json) {
+    flag = json['flag'];
+    name = json['name'];
+    domain = json['domain'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['flag'] = this.flag;
+    data['name'] = this.name;
+    data['domain'] = this.domain;
+    return data;
   }
 }

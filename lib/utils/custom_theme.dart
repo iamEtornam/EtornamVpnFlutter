@@ -23,7 +23,7 @@ ThemeData customLightTheme(
       tabBarTheme: TabBarTheme(
         unselectedLabelColor: Colors.black.withOpacity(.5),
       ),
-      appBarTheme: AppBarTheme(elevation: 0, color: Colors.white),
+      appBarTheme: AppBarTheme(elevation: 0, color: Colors.white, iconTheme: IconThemeData(color: Colors.black)),
       textTheme: Typography.material2018(platform: defaultTargetPlatform).white.copyWith(
             bodyLarge: TextStyle(color: Colors.black, fontSize: 16),
             bodyMedium: TextStyle(color: Colors.black, fontSize: 14),
@@ -63,7 +63,7 @@ ThemeData customDarkTheme(
       tabBarTheme: TabBarTheme(
         unselectedLabelColor: Colors.white.withOpacity(.7),
       ),
-      appBarTheme: AppBarTheme(elevation: 0, color: Colors.black),
+      appBarTheme: AppBarTheme(elevation: 0, color: Colors.white,iconTheme: IconThemeData(color: Colors.black) ),
       textTheme: Typography.material2018(platform: defaultTargetPlatform).white.copyWith(
             bodyLarge: TextStyle(color: Colors.white, fontSize: 16),
             bodyMedium: TextStyle(color: Colors.white, fontSize: 14),

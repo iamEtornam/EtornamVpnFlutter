@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:etornam_vpn/screens/server_list_page.dart';
 import 'package:flutter/material.dart';
@@ -12,15 +14,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  FlutterVpnState _flutterVpnState = FlutterVpnState.disconnected;
   CharonErrorState charonState = CharonErrorState.NO_ERROR;
+  Server? server;
 
   @override
   void initState() {
-    FlutterVpn.prepare();
-    FlutterVpn.onStateChanged.listen((FlutterVpnState flutterVpnState) =>
-        setState(() => this._flutterVpnState = flutterVpnState));
     super.initState();
+    FlutterVpn.prepare();
   }
 
   @override
@@ -39,126 +39,149 @@ class _HomePageState extends State<HomePage> {
             height: 35,
           ),
         ),
-        body: Stack(
-          children: [
-            Positioned(
-                top: 50,
-                child: Opacity(
-                    opacity: .1,
-                    child: Image.asset(
-                      'assets/background.png',
-                      fit: BoxFit.fill,
-                      height: MediaQuery.of(context).size.height / 1.5,
-                    ))),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
+        body: StreamBuilder<FlutterVpnState>(
+            stream: FlutterVpn.onStateChanged,
+            builder: (context, snapshot) {
+              final _flutterVpnState = snapshot.data ?? FlutterVpnState.disconnected;
+              return Stack(
                 children: [
-                  SizedBox(height: 25),
-                  Center(
-                      child: Text(
-                    '${connectionState(state: _flutterVpnState)}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  )),
-                  SizedBox(height: 8),
-                  Center(
-                      child: Text(
-                    '192.168.1.20',
-                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Color.fromRGBO(37, 112, 252, 1), fontWeight: FontWeight.w600),
-                  )),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Center(
-                    child: AvatarGlow(
-                      glowColor: _flutterVpnState == FlutterVpnState.disconnected
-                          ? Colors.transparent
-                          : Color.fromRGBO(37, 112, 252, 1),
-                      endRadius: 100.0,
-                      duration: Duration(milliseconds: 2000),
-                      repeat: _flutterVpnState == FlutterVpnState.disconnected ? false : true,
-                      showTwoGlows: true,
-                      repeatPauseDuration: Duration(milliseconds: 100),
-                      shape: BoxShape.circle,
-                      child: Material(
-                        elevation: 2,
-                        shape: CircleBorder(),
-                        color: _flutterVpnState == FlutterVpnState.disconnected
-                            ? Colors.grey
-                            : Color.fromRGBO(37, 112, 252, 1),
-                        child: SizedBox(
-                          height: 150,
-                          width: 150,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.power_settings_new,
-                                color: Colors.white,
-                                size: 50,
+                  Positioned(
+                      top: 50,
+                      child: Opacity(
+                          opacity: .1,
+                          child: Image.asset(
+                            'assets/background.png',
+                            fit: BoxFit.fill,
+                            height: MediaQuery.of(context).size.height / 1.5,
+                          ))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 25),
+                        Center(
+                            child: Text(
+                          '${connectionState(state: _flutterVpnState)}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        )),
+                        SizedBox(height: 8),
+                        FutureBuilder<List<NetworkInterface>>(
+                            future: NetworkInterface.list(),
+                            builder: (context, snapshot) {
+                              final data = snapshot.data ?? [];
+                              final ip =
+                                  data.isEmpty ? '0.0.0.0' : data.first.addresses.first.address;
+                              return Center(
+                                  child: Text(
+                                ip,
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    color: Color.fromRGBO(37, 112, 252, 1),
+                                    fontWeight: FontWeight.w600),
+                              ));
+                            }),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Center(
+                          child: AvatarGlow(
+                            glowColor: _flutterVpnState == FlutterVpnState.disconnected
+                                ? Colors.transparent
+                                : Color.fromRGBO(37, 112, 252, 1),
+                            endRadius: 100.0,
+                            duration: Duration(milliseconds: 2000),
+                            repeat: _flutterVpnState == FlutterVpnState.disconnected ? false : true,
+                            showTwoGlows: true,
+                            repeatPauseDuration: Duration(milliseconds: 100),
+                            shape: BoxShape.circle,
+                            child: Material(
+                              elevation: 0,
+                              shape: CircleBorder(),
+                              color: _flutterVpnState == FlutterVpnState.disconnected
+                                  ? Colors.grey
+                                  : Color.fromRGBO(37, 112, 252, 1),
+                              child: SizedBox(
+                                height: 150,
+                                width: 150,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.power_settings_new,
+                                      color: Colors.white,
+                                      size: 50,
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      '${connectionButtonState(state: _flutterVpnState)}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(color: Colors.white),
+                                    )
+                                  ],
+                                ),
                               ),
-                              SizedBox(height: 10),
-                              Text(
-                                '${connectionButtonState(state: _flutterVpnState)}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              )
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                            child: Text(
+                          '00.00.01',
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w700, color: Color.fromRGBO(37, 112, 252, 1)),
+                        )),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        ServerItemWidget(
+                          flagAsset: server?.flag ?? 'assets/ghana.png',
+                          label: server?.name ?? 'Ghana',
+                          icon: Icons.arrow_forward_ios,
+                          onTap: () async {
+                            final res = await Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return ServerListPage();
+                            }));
+
+                            if (res != null) {
+                              setState(() {
+                                server = res;
+                              });
+                            }
+                          },
+                        ),
+                        Spacer(),
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 15, horizontal: MediaQuery.of(context).size.width / 4.5),
+                            backgroundColor: Color.fromRGBO(37, 112, 252, 1),
+                          ),
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.star,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            'Get Premium',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(height: 35),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Center(
-                      child: Text(
-                    '00.00.01',
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w700, color: Color.fromRGBO(37, 112, 252, 1)),
-                  )),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  ServerItemWidget(
-                    flagAsset: 'assets/ghana.png',
-                    label: 'Ghana',
-                    icon: Icons.arrow_forward_ios,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                        return ServerListPage();
-                      }));
-                    },
-                  ),
-                  Spacer(),
-                  TextButton.icon(
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: 15, horizontal: MediaQuery.of(context).size.width / 4.5),
-                      backgroundColor: Color.fromRGBO(37, 112, 252, 1),
-                    ),
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.star,
-                      color: Colors.white,
-                    ),
-                    label: Text(
-                      'Get Premium',
-                      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(height: 35),
                 ],
-              ),
-            ),
-          ],
-        ));
+              );
+            }));
   }
 
   String connectionState({FlutterVpnState? state}) {
