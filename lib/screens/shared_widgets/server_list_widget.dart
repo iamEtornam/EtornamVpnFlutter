@@ -6,7 +6,8 @@ class ServerItemWidget extends StatelessWidget {
       required this.label,
       required this.icon,
       required this.flagAsset,
-      required this.onTap, this.isFaded = false})
+      required this.onTap,
+      this.isFaded = false})
       : super(key: key);
 
   final String label;
@@ -41,7 +42,7 @@ class ServerItemWidget extends StatelessWidget {
                 ),
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),

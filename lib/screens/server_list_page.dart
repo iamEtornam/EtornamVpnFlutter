@@ -1,6 +1,6 @@
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:etornam_vpn/screens/shared_widgets/server_list_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:roundcheckbox/roundcheckbox.dart';
 
 class ServerListPage extends StatefulWidget {
   @override
@@ -115,15 +115,20 @@ class _ServerListPageState extends State<ServerListPage> {
                             ),
                           ],
                         ),
-                        CircularCheckBox(
-                            activeColor: Color.fromRGBO(37, 112, 252, 1),
-                            value: freeServers[index][2],
-                            materialTapTargetSize: MaterialTapTargetSize.padded,
-                            onChanged: (bool x) {
-                              setState(() {
-                                freeServers[index][2] = !freeServers[index][2];
-                              });
-                            })
+                        RoundCheckBox(
+                          size: 24,
+                          checkedWidget: const Icon(Icons.check, size: 18, color: Colors.white),
+                          borderColor: freeServers[index][2]
+                              ? Theme.of(context).scaffoldBackgroundColor
+                              : Color.fromRGBO(37, 112, 252, 1),
+                          checkedColor: Color.fromRGBO(37, 112, 252, 1),
+                          isChecked: freeServers[index][2],
+                          onTap: (x) {
+                            setState(() {
+                              freeServers[index][2] = !freeServers[index][2];
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
