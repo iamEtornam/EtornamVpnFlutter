@@ -2,6 +2,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:etornam_vpn/screens/server_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vpn/flutter_vpn.dart';
+import 'package:flutter_vpn/state.dart';
 
 import 'shared_widgets/server_list_widget.dart';
 
@@ -30,10 +31,7 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
           title: Text(
             'Etornam VPN',
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                .copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
           ),
           leading: Image.asset(
             'assets/logo.png',
@@ -60,32 +58,35 @@ class _HomePageState extends State<HomePage> {
                   Center(
                       child: Text(
                     '${connectionState(state: _flutterVpnState)}',
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   )),
                   SizedBox(height: 8),
                   Center(
                       child: Text(
                     '192.168.1.20',
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Color.fromRGBO(37, 112, 252, 1),
-                        fontWeight: FontWeight.w600),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Color.fromRGBO(37, 112, 252, 1), fontWeight: FontWeight.w600),
                   )),
                   SizedBox(
                     height: 15,
                   ),
                   Center(
                     child: AvatarGlow(
-                      glowColor: _flutterVpnState == FlutterVpnState.disconnected ? Colors.transparent : Color.fromRGBO(37, 112, 252, 1),
+                      glowColor: _flutterVpnState == FlutterVpnState.disconnected
+                          ? Colors.transparent
+                          : Color.fromRGBO(37, 112, 252, 1),
                       endRadius: 100.0,
                       duration: Duration(milliseconds: 2000),
-                      repeat: _flutterVpnState == FlutterVpnState.disconnected ? false :true,
+                      repeat: _flutterVpnState == FlutterVpnState.disconnected ? false : true,
                       showTwoGlows: true,
                       repeatPauseDuration: Duration(milliseconds: 100),
                       shape: BoxShape.circle,
                       child: Material(
                         elevation: 2,
                         shape: CircleBorder(),
-                        color: _flutterVpnState == FlutterVpnState.disconnected ? Colors.grey : Color.fromRGBO(37, 112, 252, 1),
+                        color: _flutterVpnState == FlutterVpnState.disconnected
+                            ? Colors.grey
+                            : Color.fromRGBO(37, 112, 252, 1),
                         child: SizedBox(
                           height: 150,
                           width: 150,
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                                 '${connectionButtonState(state: _flutterVpnState)}',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium!
                                     .copyWith(color: Colors.white),
                               )
                             ],
@@ -118,9 +119,8 @@ class _HomePageState extends State<HomePage> {
                   Center(
                       child: Text(
                     '00.00.01',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: Color.fromRGBO(37, 112, 252, 1)),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w700, color: Color.fromRGBO(37, 112, 252, 1)),
                   )),
                   SizedBox(
                     height: 25,
@@ -130,19 +130,19 @@ class _HomePageState extends State<HomePage> {
                     label: 'Ghana',
                     icon: Icons.arrow_forward_ios,
                     onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                         return ServerListPage();
                       }));
                     },
                   ),
                   Spacer(),
-                  RaisedButton.icon(
-                    elevation: 0,
-                    padding: EdgeInsets.symmetric(
-                        vertical: 15,
-                        horizontal: MediaQuery.of(context).size.width / 4.5),
-                    color: Color.fromRGBO(37, 112, 252, 1),
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15, horizontal: MediaQuery.of(context).size.width / 4.5),
+                      backgroundColor: Color.fromRGBO(37, 112, 252, 1),
+                    ),
                     onPressed: () {},
                     icon: Icon(
                       Icons.star,
@@ -150,13 +150,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     label: Text(
                       'Get Premium',
-                      style: Theme.of(context)
-                          .textTheme
-                          .button
-                          .copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
                     ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
                   ),
                   SizedBox(height: 35),
                 ],
@@ -166,7 +161,7 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  String connectionState({FlutterVpnState state}) {
+  String connectionState({FlutterVpnState? state}) {
     switch (state) {
       case FlutterVpnState.connected:
         return 'You are connected';
@@ -176,14 +171,14 @@ class _HomePageState extends State<HomePage> {
         return 'You are disconnected';
       case FlutterVpnState.disconnecting:
         return 'VPN is disconnecting';
-      case FlutterVpnState.genericError:
+      case FlutterVpnState.error:
         return 'Error getting status';
       default:
         return 'Getting connection status';
     }
   }
 
-   String connectionButtonState({FlutterVpnState state}) {
+  String connectionButtonState({FlutterVpnState? state}) {
     switch (state) {
       case FlutterVpnState.connected:
         return 'Connected';
@@ -193,7 +188,7 @@ class _HomePageState extends State<HomePage> {
         return 'Disconnected';
       case FlutterVpnState.disconnecting:
         return 'Disconnecting';
-      case FlutterVpnState.genericError:
+      case FlutterVpnState.error:
         return 'Error';
       default:
         return 'Disconnected';

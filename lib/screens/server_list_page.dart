@@ -17,9 +17,9 @@ class _ServerListPageState extends State<ServerListPage> {
   ];
 
   List freeServers = [
-    ['assets/england.png', 'England',false],
-    ['assets/france.png', 'France',false],
-    ['assets/ghana.png', 'Ghana',false],
+    ['assets/england.png', 'England', false],
+    ['assets/france.png', 'France', false],
+    ['assets/ghana.png', 'Ghana', false],
   ];
   @override
   Widget build(BuildContext context) {
@@ -27,10 +27,7 @@ class _ServerListPageState extends State<ServerListPage> {
       appBar: AppBar(
         title: Text(
           'Servers',
-          style: Theme.of(context)
-              .textTheme
-              .headline6
-              .copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
       body: ListView(
@@ -40,16 +37,14 @@ class _ServerListPageState extends State<ServerListPage> {
           RichText(
               text: TextSpan(
                   text: 'Premuim ',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style:
+                      Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
                   children: [
                 TextSpan(
                     text: 'Servers',
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle2
+                        .titleSmall!
                         .copyWith(fontWeight: FontWeight.normal))
               ])),
           SizedBox(
@@ -61,7 +56,7 @@ class _ServerListPageState extends State<ServerListPage> {
               itemCount: premiumServers.length,
               itemBuilder: (_, index) {
                 return ServerItemWidget(
-                  isFaded: true,
+                    isFaded: true,
                     label: premiumServers[index][1],
                     icon: Icons.lock,
                     flagAsset: premiumServers[index][0],
@@ -74,16 +69,14 @@ class _ServerListPageState extends State<ServerListPage> {
           RichText(
               text: TextSpan(
                   text: 'Free ',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2
-                      .copyWith(fontWeight: FontWeight.w700),
+                  style:
+                      Theme.of(context).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w700),
                   children: [
                 TextSpan(
                     text: 'Servers',
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle2
+                        .titleSmall!
                         .copyWith(fontWeight: FontWeight.normal))
               ])),
           SizedBox(
@@ -118,12 +111,12 @@ class _ServerListPageState extends State<ServerListPage> {
                             ),
                             Text(
                               freeServers[index][1],
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ],
                         ),
                         CircularCheckBox(
-                          activeColor: Color.fromRGBO(37, 112, 252, 1),
+                            activeColor: Color.fromRGBO(37, 112, 252, 1),
                             value: freeServers[index][2],
                             materialTapTargetSize: MaterialTapTargetSize.padded,
                             onChanged: (bool x) {

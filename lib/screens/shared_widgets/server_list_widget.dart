@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 
 class ServerItemWidget extends StatelessWidget {
   const ServerItemWidget(
-      {Key key,
-      @required this.label,
-      @required this.icon,
-      @required this.flagAsset,
-      @required this.onTap, this.isFaded = false})
+      {Key? key,
+      required this.label,
+      required this.icon,
+      required this.flagAsset,
+      required this.onTap, this.isFaded = false})
       : super(key: key);
 
   final String label;
   final IconData icon;
   final String flagAsset;
-  final Function onTap;
+  final VoidCallback onTap;
   final isFaded;
 
   @override
