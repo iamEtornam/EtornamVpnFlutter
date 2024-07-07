@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage> {
       username: server!.username!,
       password: server!.password!,
       name: server!.name!,
-      mtu: server!.mtu!,
-      port: server!.port!,
+      // mtu: server!.mtu!,
+      // port: server!.port!,
     );
 
     // Get current time
