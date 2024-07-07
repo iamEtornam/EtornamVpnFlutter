@@ -11,10 +11,10 @@ class _ServerListPageState extends State<ServerListPage> {
   Server server = Server(
       name: 'Ghana',
       flag: 'assets/ghana.png',
-      domain: 'vpn.example.com',
-      username: 'admin',
-      password: 'admin',
-      port: 1234,
+      domain: 'PL226.vpnbook.com',
+      username: 'vpnbook',
+      password: '3ev7r8m',
+      port: 443,
       mtu: 1234);
   final premiumServers = <Server>[
     Server(
